@@ -37,7 +37,6 @@ class DD:
         return inp*self.Tsd + self.Tmean
 
 
-
     def DeepDream(self, image, layer, iterations, lr):
         input = torch.autograd.Variable(image, requires_grad=True)
 
