@@ -1,0 +1,6 @@
+*env/
+imgs/*
+outs/*
+.devcontainer/
+.vscode/
+.dockerignore
