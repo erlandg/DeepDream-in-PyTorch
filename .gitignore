@@ -1,6 +1,7 @@
 *env/
 imgs/*
 outs/*
+__pycache__/
 .devcontainer/
 .vscode/
 .dockerignore

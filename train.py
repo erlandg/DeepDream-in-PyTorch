@@ -1,6 +1,14 @@
-from dreamnet import *
+from dreamnet import DD
+import config
+
+import torchvision.transforms as T
 from torchvision.utils import save_image
-import os
+
+import numpy as np
+import matplotlib.pyplot as plt
+from PIL import Image
+
+import os, click
 
 
 def white_noise_image(w,h):
@@ -8,44 +16,60 @@ def white_noise_image(w,h):
     return bw_map
 
 
-LAYER_ID = 28 # Last conv layer
-LAYER_ID = 14 # "Eye" layer
+@click.command()
+@click.argument('filepath', type=click.Path(exists=True))
+@click.option(
+    '-r', '--repeat', default=0,
+    help = 'The number of times to repeat the process (default = 0)'
+)
+@click.option(
+    '-d', '--display-image', is_flag=True, default=False,
+    help = 'Boolean, whether to display output image or not (default = False)'
+)
+def main(filepath, repeat, display_image):
 
-NUM_ITERATIONS = 5
-LR = .5
+    *fname, ftype = filepath.split('/')[-1].split('.')
+    fname = '.'.join(fname)
 
-NUM_DOWNSCALES = 4
-SCALE = 1.4
+    img = Image.open(filepath)
 
-REPEAT = False
-NUM_REPEAT = 20
+    print('Dreaming ...')
+    DeepImg = DD().Run(
+        img,
+        config.LAYER_ID,
+        config.NUM_ITERATIONS,
+        config.LR,
+        config.NUM_DOWNSCALES,
+        config.SCALE
+    )
 
-
-dir_pth = os.getcwd()
-fname = 'hengekoye'
-ftype = 'jpg'
-IMAGE_PATH = dir_pth+'\\imgs\\%s.%s' % (fname, ftype)
-SAVE_PATH = lambda idx: dir_pth+'\\outs\\%s_%s.%s' % (fname, str(idx), ftype)
-
-
-img = Image.open(IMAGE_PATH)
-# img = img.rotate(270, Image.NEAREST, expand = 1) # If vertical
-
-# img = white_noise_image(1500, 1500)
-
-DeepImg = DD().Run(img, LAYER_ID, NUM_ITERATIONS, LR, NUM_DOWNSCALES, SCALE)
-
-if REPEAT:
-    for i in range(NUM_REPEAT):
+    for i in range(repeat):
         DeepRep = T.functional.to_pil_image(DeepImg.permute(2,0,1))
-        DeepImg = DD().Run(DeepRep, LAYER_ID, NUM_ITERATIONS, LR, NUM_DOWNSCALES, SCALE)
+        DeepImg = DD().Run(
+            DeepRep,
+            config.LAYER_ID,
+            config.NUM_ITERATIONS,
+            config.LR,
+            config.NUM_DOWNSCALES,
+            config.SCALE
+        )
 
-i = 1
-while i:
-    if not os.path.isfile(SAVE_PATH(i)):
-        save_image(DeepImg.permute(2,0,1), SAVE_PATH(i))
-        i = 0
-    else: i += 1
+    print('Saving ...')
+    i = 1
+    while i:
+        fpath = 'outs/{}_{}.{}'.format(fname, i, ftype)
+        if not os.path.isfile(fpath):
+            save_image(DeepImg.permute(2,0,1), fpath)
+            print('Image saved.')
+            i = 0
+        else: i += 1
 
-plt.imshow(DeepImg)
-plt.show()
+
+    if display_image:
+        plt.imshow(DeepImg)
+        plt.show()
+
+
+
+if __name__ == "__main__":
+    main()

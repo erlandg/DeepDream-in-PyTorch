@@ -2,16 +2,11 @@ import torch
 import torch.nn as nn
 from torchvision import models
 import torchvision.transforms as T
-import numpy as np
-import scipy.ndimage as nd
-import matplotlib.pyplot as plt
-from PIL import Image, ImageFilter, ImageChops
 
 
 class DD:
     def __init__(self):
         self.model = models.vgg16(pretrained = True)
-        self.model = self.model.cuda()
         self.modules = list(self.model.features.modules())
 
         imgSize = 1500 # 224
@@ -29,8 +24,13 @@ class DD:
             self.Tnorm
         ])
 
-        self.Tmean = torch.Tensor(self.Tmean).cuda()
-        self.Tsd = torch.Tensor(self.Tsd).cuda()
+        self.Tmean = torch.Tensor(self.Tmean)
+        self.Tsd = torch.Tensor(self.Tsd)
+        
+        if torch.cuda.is_available():
+            self.model = self.model.cuda()
+            self.Tmean = self.Tmean.cuda()
+            self.Tsd = self.Tsd.cuda()
 
 
     def toImg(self, inp):
@@ -53,7 +53,10 @@ class DD:
 
 
     def Recursive(self, image, layer, iterations, lr, num_downscales, dc_scale):
-        octaves = [self.Tproc(image).unsqueeze(0).cuda()]
+        _ = self.Tproc(image).unsqueeze(0)
+        if torch.cuda.is_available():
+            _ = _.cuda()
+        octaves = [_]
 
         for i in range(num_downscales - 1):
             octaves.append(nn.functional.interpolate(
