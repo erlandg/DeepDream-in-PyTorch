@@ -16,6 +16,10 @@ def white_noise_image(w,h):
     return bw_map
 
 
+def output_fname(fname, index, ftype):
+    return 'out/{}_{}.{}'.format(fname, index, ftype)
+
+
 @click.command()
 @click.argument('filepath', type=click.Path(exists=True))
 @click.option(
@@ -54,15 +58,17 @@ def main(filepath, repeat, display_image):
             config.SCALE
         )
 
+
     print('Saving ...')
+    if not os.path.isdir('out'):
+        os.mkdir('out')
+
     i = 1
-    while i:
-        fpath = 'outs/{}_{}.{}'.format(fname, i, ftype)
-        if not os.path.isfile(fpath):
-            save_image(DeepImg.permute(2,0,1), fpath)
-            print('Image saved.')
-            i = 0
-        else: i += 1
+    while os.path.isfile(output_fname(fname, i, ftype)):
+        i += 1
+
+    save_image(DeepImg.permute(2,0,1), output_fname(fname, i, ftype))
+    print('Image saved.')
 
 
     if display_image:

@@ -1,6 +1,6 @@
 *env/
 imgs/*
-outs/*
+out/*
 __pycache__/
 .devcontainer/
 .vscode/
