@@ -9,7 +9,7 @@ ENV PYTHONUNBUFFERED=1
 
 # Install pip requirements
 COPY requirements.txt .
-RUN cat requirements.txt | cut -f1 -d"#" | sed '/^\s*$/d' | xargs -n 1 pip install
+RUN pip3 install --no-cache -r requirements.txt
 
 WORKDIR /app
 COPY . /app
