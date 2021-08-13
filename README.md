@@ -1,5 +1,8 @@
 ### DeepDream-in-PyTorch
 
+!(./.preview_img.jpg)
+
+
 Run on Python 3.8 with PyTorch 1.9.0 and CUDA 11.1 (with cuDNN 8)
 
 ## Installation via pip
