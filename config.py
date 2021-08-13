@@ -1,8 +1,8 @@
-LAYER_ID = 28 # Last conv layer
-LAYER_ID = 14 # "Eye" layer
+# Run dreamnet.py to get details on the layer IDs
+LAYER_ID = 35
 
-NUM_ITERATIONS = 5
-LR = .5
+NUM_ITERATIONS = 6
+LR = .6
 
-NUM_DOWNSCALES = 4
-SCALE = 1.4
+NUM_DOWNSCALES = 5
+SCALE = 1.3
