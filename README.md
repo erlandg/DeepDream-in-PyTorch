@@ -25,6 +25,7 @@ docker run --rm -it --init \
   --user="$(id -u):$(id -g)" \
   --volume="$PWD:/" \
   -e NVIDIA_VISIBLE_DEVICES=0 \
-  anibali/pytorch python3 test.py
+  anibali/pytorch bash
 
+python3 train.py imgs/image_path.jpg
 ```
