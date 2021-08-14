@@ -20,6 +20,11 @@ def output_fname(fname, index, ftype):
     return 'out/{}_{}.{}'.format(fname, index, ftype)
 
 
+def read_dict_from_txt(filepath):
+    f = open(filepath, 'r').read()
+    return eval(f)
+
+
 @click.command()
 @click.argument('filepath', type=click.Path(exists=True))
 @click.option(
@@ -27,10 +32,16 @@ def output_fname(fname, index, ftype):
     help = 'The number of times to repeat the process (default = 0)'
 )
 @click.option(
+    '-s', '--single-classes', is_flag=True, flag_value='random', default=False,
+    help = 'Whether to set gradients as loss, or maximise one-and-one neuron at a time'
+)
+@click.option(
     '-d', '--display-image', is_flag=True, default=False,
     help = 'Boolean, whether to display output image or not (default = False)'
 )
-def main(filepath, repeat, display_image):
+def main(filepath, repeat, single_classes, display_image):
+
+    labels = read_dict_from_txt('labels.txt')
 
     *fname, ftype = filepath.split('/')[-1].split('.')
     fname = '.'.join(fname)
@@ -38,7 +49,8 @@ def main(filepath, repeat, display_image):
     img = Image.open(filepath)
 
     print('Dreaming ...')
-    DeepImg = DD().Run(
+    DD_ = DD(single_classes)
+    DeepImg = DD_.Run(
         img,
         config.LAYER_ID,
         config.NUM_ITERATIONS,
@@ -46,10 +58,13 @@ def main(filepath, repeat, display_image):
         config.NUM_DOWNSCALES,
         config.SCALE
     )
+    if (config.LAYER_ID == len(DD_.modules)-1) and (single_classes == 'random'):
+        print(f'Dreamt of {labels[int(DD_.class_id)]} ...')
 
     for i in range(repeat):
         DeepRep = T.functional.to_pil_image(DeepImg.permute(2,0,1))
-        DeepImg = DD().Run(
+        DD_ = DD(single_classes)
+        DeepImg = DD_.Run(
             DeepRep,
             config.LAYER_ID,
             config.NUM_ITERATIONS,
@@ -57,6 +72,8 @@ def main(filepath, repeat, display_image):
             config.NUM_DOWNSCALES,
             config.SCALE
         )
+        if (config.LAYER_ID == len(DD_.modules)-1) and (single_classes == 'random'):
+            print(f'Dreamt of {labels[int(DD_.class_id)]} ...')
 
 
     print('Saving ...')

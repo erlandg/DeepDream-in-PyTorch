@@ -1,11 +1,12 @@
 ### DeepDream-in-PyTorch
 
-![A custom DeepDream](./.preview_img.jpg)
+![](./example-images/preview3.jpg)
+![](./example-images/preview4.jpeg)
 
 
 Run on Python 3.8 with PyTorch 1.9.0 and CUDA 11.1 (with cuDNN 8)
 
-## Installation via pip
+# Installation via pip
 Install requirements inside your virtual environment as such
 ```bash
 pip3 install -r requirements.txt
@@ -15,20 +16,15 @@ or like this, if the previous line did not work
 cat requirements.txt | cut -f1 -d"#" | sed '/^\s*$/d' | xargs -n 1 pip install
 ```
 
-## Docker
-Can be run inside Docker container as such:
+## Run
+
+Can be run from command line as such:
 ```bash
-docker pull pytorch/pytorch:1.9.0-cuda11.1-cudnn8-devel
+python3 train.py path/to/image.file
+```
 
-docker run -it --rm --gpus all pytorch/pytorch bash
-
-docker run --rm -it --init \
-  --runtime=nvidia \
-  --ipc=host \
-  --user="$(id -u):$(id -g)" \
-  --volume="$PWD:/" \
-  -e NVIDIA_VISIBLE_DEVICES=0 \
-  anibali/pytorch bash
-
-python3 train.py imgs/image_path.jpg
+With arguments `-r N` where N is the number of repeats and `-s` if a single FC-layer neuron should be selected at a time, defaults to a random value, but can be set to an integer value. If forward-passing to the classification layer, a class from labels.txt can be selected.
+More can be found in
+```bash
+python3 train.py --help
 ```
