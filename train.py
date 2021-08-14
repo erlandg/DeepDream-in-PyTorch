@@ -12,7 +12,7 @@ import os, click
 
 
 def white_noise_image(w,h):
-    bw_map = Image.fromarray(np.random.randint(126,127,(w,h,3),dtype=np.dtype('uint8')))
+    bw_map = Image.fromarray(np.random.randint(180,190,(w,h,3),dtype=np.dtype('uint8')))
     return bw_map
 
 
@@ -26,7 +26,9 @@ def read_dict_from_txt(filepath):
 
 
 @click.command()
-@click.argument('filepath', type=click.Path(exists=True))
+@click.argument(
+    'filepath', type=click.Path()
+)
 @click.option(
     '-r', '--repeat', default=0,
     help = 'The number of times to repeat the process (default = 0)'
@@ -43,10 +45,15 @@ def main(filepath, repeat, single_classes, display_image):
 
     labels = read_dict_from_txt('labels.txt')
 
-    *fname, ftype = filepath.split('/')[-1].split('.')
-    fname = '.'.join(fname)
+    if filepath != 'none':
+        *fname, ftype = filepath.split('/')[-1].split('.')
+        fname = '.'.join(fname)
+        img = Image.open(filepath)
+    else:
+        fname = 'white_noise'
+        ftype = 'jpg'
+        img = white_noise_image(1500, 1500)
 
-    img = Image.open(filepath)
 
     print('Dreaming ...')
     DD_ = DD(single_classes)
