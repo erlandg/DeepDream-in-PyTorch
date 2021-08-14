@@ -14,7 +14,7 @@ class DD:
 
         self.class_id = class_id
     
-        imgSize = 1500
+        self.imgSize = 1500
 
         self.Tmean = [0.485, 0.456, 0.406]
         self.Tsd = [0.229, 0.224, 0.225]
@@ -23,8 +23,8 @@ class DD:
             std = self.Tsd
         )
 
+        self.Tresize = T.Resize((self.imgSize, self.imgSize))
         self.Tproc = T.Compose([
-            # T.Resize((imgSize, imgSize)),
             T.ToTensor(),
             self.Tnorm
         ])
@@ -67,7 +67,8 @@ class DD:
 
 
     def Recursive(self, image, layer, iterations, lr, num_downscales, dc_scale):
-        _ = self.Tproc(image).unsqueeze(0)
+        image_ = self.Tresize(image) if sum([_ > self.imgSize for _ in image.size]) else image # if larger than cap
+        _ = self.Tproc(image_).unsqueeze(0)
         if torch.cuda.is_available():
             _ = _.cuda()
         octaves = [_]

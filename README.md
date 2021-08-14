@@ -1,7 +1,7 @@
 ### DeepDream-in-PyTorch
 
-!(./example-images/preview3.jpg)
-!(./example-images/preview4.jpeg)
+![](./example-images/preview3.jpg)
+![](./example-images/preview4.jpeg)
 
 
 Run on Python 3.8 with PyTorch 1.9.0 and CUDA 11.1 (with cuDNN 8)
