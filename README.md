@@ -1,4 +1,4 @@
-### DeepDream-in-PyTorch
+# DeepDream-in-PyTorch
 
 Repeated gradient loss, layer 17       |  Single iter. gradient loss, layer 17
 :-------------------------------------:|:-------------------------------------:
@@ -7,7 +7,7 @@ Repeated gradient loss, layer 17       |  Single iter. gradient loss, layer 17
 
 Run on Python 3.8 with PyTorch 1.9.0 and CUDA 11.1 (with cuDNN 8)
 
-# Installation via pip
+### Installation via pip
 Install requirements inside your virtual environment as such
 ```bash
 pip3 install -r requirements.txt
