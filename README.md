@@ -1,7 +1,8 @@
 ### DeepDream-in-PyTorch
 
-![](./example-images/preview3.jpg)
-![](./example-images/preview4.jpeg)
+Repeated gradient loss, layer 17       |  Single iter. gradient loss, layer 17
+:-------------------------------------:|:-------------------------------------:
+![](./example-images/preview3.jpeg)    |  ![](./example-images/preview4.jpeg)
 
 
 Run on Python 3.8 with PyTorch 1.9.0 and CUDA 11.1 (with cuDNN 8)
