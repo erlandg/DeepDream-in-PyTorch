@@ -12,10 +12,6 @@ Install requirements inside your virtual environment as such
 ```bash
 pip3 install -r requirements.txt
 ```
-or like this, if the previous line did not work
-```bash
-cat requirements.txt | cut -f1 -d"#" | sed '/^\s*$/d' | xargs -n 1 pip install
-```
 
 ## Run
 
@@ -23,8 +19,12 @@ Can be run from command line as such:
 ```bash
 python3 train.py path/to/image.file
 ```
+Or on a white-noise image (with dimensions from config) as such
+```bash
+python3 train.py none
+```
 
-With arguments `-r N` where N is the number of repeats and `-s` if a single FC-layer neuron should be selected at a time, defaults to a random value, but can be set to an integer value. If forward-passing to the classification layer, a class from labels.txt can be selected.
+With optional arguments. Firstly, `-r N` where N is the number of repeats, and secondly, `-s` if a single FC-layer neuron should be selected at a time, defaults to a random value when provided, but can be set to an integer value. If forward-passing to the classification layer, a class from labels.txt can be selected by index.
 More can be found in
 ```bash
 python3 train.py --help

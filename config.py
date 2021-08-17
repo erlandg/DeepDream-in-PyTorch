@@ -1,8 +1,11 @@
 # Run dreamnet.py to get details on the layer IDs
-LAYER_ID = 17
+LAYER_ID = 28
 
 NUM_ITERATIONS = 1
-LR = .4
+LR = .1
 
-NUM_DOWNSCALES = 3
-SCALE = 1.5
+NUM_DOWNSCALES = 8
+SCALE = 1.2
+
+WHITE_NOISE_WIDTH = 1500
+WHITE_NOISE_HEIGHT = 1000
