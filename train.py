@@ -23,8 +23,7 @@ def true_if_dreaming_of_things(module_length, class_index):
 
 
 def white_noise_image(w,h):
-    # bw_map = Image.fromarray(np.random.randint(0,255,(w,h,3),dtype=np.dtype('uint8')))
-    bw_map = Image.fromarray(np.random.normal(loc=128,scale=35,size=(h,w,3)).astype('uint8'))
+    bw_map = Image.fromarray(np.random.randint(0,255,(w,h,3),dtype=np.dtype('uint8')))
     return bw_map
 
 
@@ -116,10 +115,8 @@ def main(filepath, repeat, single_classes, make_gif):
         if true_if_things:
             tqdm.write(f'Dreamt of {labels[int(DD_.class_id)]} ...')
 
-
-        # print('Saving ...')
         save_image(DeepImg.permute(2,0,1), output_fname(folder_path, fname, i, ftype))
-        # print('Image saved.')
+
 
     if make_gif:
         print('Making GIF ...')
