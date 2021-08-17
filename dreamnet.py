@@ -42,26 +42,34 @@ class DD:
         return inp*self.Tsd + self.Tmean
 
 
+    def make_step(self, input, layer, lr, jitter=32):
+        out = input
+        ox, oy = torch.randint(low=-jitter, high=jitter+1, size=(2,))
+        out = torch.roll(torch.roll(out, (int(ox)), -1), (int(oy)), -2)
+
+        for Lid in range(layer + 1):
+            if type(self.modules[Lid - 1]) == nn.modules.pooling.AdaptiveAvgPool2d:
+                out = torch.flatten(out, 1)
+            out = self.modules[Lid](out)
+            
+        if (self.class_id != None) and (self.class_id != 'none'):
+            loss = torch.zeros_like(out)
+            loss[0, self.class_id] = 1
+            out.backward(gradient=loss)
+        else:
+            loss = F.relu(out.norm())
+            loss.backward()
+            
+        input.data = input.data + lr*torch.tanh(input.grad.data)
+        return input
+
+
     def DeepDream(self, image, layer, iterations, lr):
         input = torch.autograd.Variable(image, requires_grad=True)
 
         self.model.zero_grad()
         for _ in range(iterations):
-            out = input
-            for Lid in range(layer + 1):
-                if type(self.modules[Lid - 1]) == nn.modules.pooling.AdaptiveAvgPool2d:
-                    out = torch.flatten(out, 1)
-                out = self.modules[Lid](out)
-                
-            if (self.class_id != None) and (self.class_id != 'none'):
-                loss = torch.zeros_like(out)
-                loss[0, self.class_id] = 1
-                out.backward(gradient=loss)
-            else:
-                loss = F.relu(out.norm())
-                loss.backward()
-                
-            input.data = input.data + lr*torch.tanh(input.grad.data)
+            input = self.make_step(input, layer, lr)
 
         return input
 
@@ -107,9 +115,9 @@ class DD:
         return out.detach()
 
 
-    def Run(self, image, LAYER_ID, NUM_ITERATIONS, LR, NUM_DOWNSCALES, SCALE):
+    def Run(self, image, LAYER_ID, NUM_ITERATIONS, LR, NUM_DOWNSCALES, SCALE, reevaluate_class_id=False):
         self.model.eval()
-        if self.class_id == 'random':
+        if self.class_id == 'random' or reevaluate_class_id:
             try:
                 self.class_id = torch.randint(high=self.modules[LAYER_ID].out_features, size=(1,))
             except AttributeError:
